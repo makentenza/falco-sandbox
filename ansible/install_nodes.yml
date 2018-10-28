@@ -1,0 +1,26 @@
+- name: Deploy Falco and dependencies on RHEL Kube Nodes
+  hosts: kube-nodes
+  tasks:
+
+    - name: Ensure required repositories are enabled
+      get_url:
+        url: https://s3.amazonaws.com/download.draios.com/stable/rpm/draios.repo
+        dest: /etc/yum.repos.d/draios.repo
+
+    - name: Ensure GPG key exists in the rpm db
+      rpm_key:
+        key: https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public
+        state: present
+        
+    - name: Ensure required packages are installed
+      yum:
+        name: https://anorien.csc.warwick.ac.uk/mirrors/epel/7/x86_64/Packages/e/epel-release-7-11.noarch.rpm
+        state: present
+
+    - name: Ensure Falco and Kernel packages are installed
+      yum:
+        nme: "{{ item }}"
+        state: present
+      with_items:
+        - kernel-devel-$(uname -r)
+        - falco

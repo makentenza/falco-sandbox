@@ -2,6 +2,10 @@
   hosts: kube-nodes
   tasks:
 
+    - name: Resgister Node's Kernel release
+      command: uname -r
+      register: kernel_release
+
     - name: Ensure required repositories are enabled
       get_url:
         url: https://s3.amazonaws.com/download.draios.com/stable/rpm/draios.repo
@@ -22,5 +26,5 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - kernel-devel-$(uname -r)
+        - kernel-devel-{{ kernel_release.stout }}
         - falco

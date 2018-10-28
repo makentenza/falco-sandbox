@@ -26,5 +26,5 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - kernel-devel-{{ kernel_release.stout }}
+        - kernel-devel-{{ kernel_release.stdout }}
         - falco
